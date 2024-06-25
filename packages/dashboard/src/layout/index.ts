@@ -1,4 +1,5 @@
 export { default as LayoutManagerContext } from './LayoutManagerContext';
+export * from './LayoutUtils';
 export { default as LayoutUtils } from './LayoutUtils';
 export { default as GLPropTypes } from './GLPropTypes';
 export { default as useDashboardPanel } from './useDashboardPanel';

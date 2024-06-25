@@ -65,7 +65,7 @@ function ChartFilterOverlay({
   );
 
   const handleOpenLinker = useCallback(
-    event => {
+    (event: MouseEvent) => {
       event.stopPropagation();
       event.preventDefault();
 

@@ -116,8 +116,14 @@ export function TableDropdown({
   );
 
   const handleChange = useCallback(
-    newSelectedIndex => {
-      onChange(allValues[newSelectedIndex]);
+    (newSelectedIndex: string | number) => {
+      onChange(
+        allValues[
+          typeof newSelectedIndex === 'string'
+            ? parseInt(newSelectedIndex, 10)
+            : newSelectedIndex
+        ]
+      );
     },
     [onChange, allValues]
   );

@@ -35,8 +35,10 @@ export type FileListRenderItemProps = RenderItemProps<FileStorageItem> & {
   isDropTargetValid: boolean;
 
   onDragStart: (index: number, e: React.DragEvent<HTMLDivElement>) => void;
-  onDragOver: (index: number, e: React.DragEvent<HTMLDivElement>) => void;
   onDragEnd: (index: number, e: React.DragEvent<HTMLDivElement>) => void;
+  onDragOver: (index: number, e: React.DragEvent<HTMLDivElement>) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
+  onDragExit: (index: number, e: React.DragEvent<HTMLDivElement>) => void;
   onDrop: (index: number, e: React.DragEvent<HTMLDivElement>) => void;
 };
 

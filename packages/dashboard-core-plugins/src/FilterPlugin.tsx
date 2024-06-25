@@ -1,9 +1,10 @@
-import { Component, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid';
 import {
   assertIsDashboardPluginProps,
   DashboardPluginComponentProps,
+  LayoutPanel,
   LayoutUtils,
   PanelEvent,
   updateDashboardData,
@@ -11,6 +12,7 @@ import {
 } from '@deephaven/dashboard';
 import Log from '@deephaven/log';
 import { TextUtils } from '@deephaven/utils';
+import type { dh } from '@deephaven/jsapi-types';
 import { InputFilterEvent } from './events';
 import {
   DropdownFilterPanel,
@@ -41,11 +43,13 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
   assertIsDashboardPluginProps(props);
   const { id: localDashboardId, layout, registerComponent } = props;
   const dispatch = useDispatch();
-  const [panelColumns] = useState(() => new Map<Component, Column[]>());
+  const [panelColumns] = useState(() => new Map<LayoutPanel, Column[]>());
   const [panelFilters] = useState(
-    () => new Map<Component, FilterChangeEvent[]>()
+    () => new Map<LayoutPanel, FilterChangeEvent[]>()
   );
-  const [panelTables] = useState(() => new Map());
+  const [panelTables] = useState(
+    () => new Map<string | string[] | null | undefined, dh.Table>()
+  );
 
   const sendUpdate = useCallback(() => {
     const columns = Array.from(panelColumns.values())
@@ -96,7 +100,7 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
    * @param columns The columns in this panel
    */
   const handleColumnsChanged = useCallback(
-    (panel: Component, columns: Column | Column[]) => {
+    (panel: LayoutPanel, columns: Column | Column[]) => {
       log.debug2('handleColumnsChanged', panel, columns);
       panelColumns.set(panel, ([] as Column[]).concat(columns));
       sendUpdate();
@@ -106,20 +110,20 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
 
   /**
    * Handler for the FILTERS_CHANGED event.
-   * @param {Component} panel The component that's emitting the filter change
+   * @param panel The component that's emitting the filter change
    * @param {FilterChangeEvent|Array<FilterChangeEvent>} filters The input filters set by the panel
    */
   const handleFiltersChanged = useCallback(
-    (panel, filters) => {
+    (panel: LayoutPanel, filters: FilterChangeEvent | FilterChangeEvent[]) => {
       log.debug2('handleFiltersChanged', panel, filters);
-      panelFilters.set(panel, [].concat(filters) as FilterChangeEvent[]);
+      panelFilters.set(panel, [filters].flat());
       sendUpdate();
     },
     [panelFilters, sendUpdate]
   );
 
   const handleTableChanged = useCallback(
-    (panel, table) => {
+    (panel: LayoutPanel, table: dh.Table) => {
       log.debug2('handleTableChanged', panel, table);
       panelTables.set(LayoutUtils.getIdFromPanel(panel), table);
       sendUpdate();
@@ -128,7 +132,7 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
   );
 
   const handlePanelUnmount = useCallback(
-    panel => {
+    (panel: LayoutPanel) => {
       log.debug2('handlePanelUnmount', panel);
       panelColumns.delete(panel);
       panelFilters.delete(panel);
@@ -146,7 +150,15 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
       id = nanoid(),
       focusElement = LayoutUtils.DEFAULT_FOCUS_SELECTOR,
       createNewStack = false,
-      dragEvent = null,
+      dragEvent,
+    }: {
+      title?: string;
+      metadata?: Record<string, unknown>;
+      panelState?: Record<string, unknown> | null;
+      id?: string;
+      focusElement?: string;
+      createNewStack?: boolean;
+      dragEvent?: React.DragEvent;
     }) => {
       const config = {
         type: 'react-component' as const,
@@ -176,7 +188,15 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
       id = nanoid(),
       focusElement = LayoutUtils.DEFAULT_FOCUS_SELECTOR,
       createNewStack = false,
-      dragEvent = undefined,
+      dragEvent,
+    }: {
+      title?: string;
+      metadata?: Record<string, unknown>;
+      panelState?: Record<string, unknown> | null;
+      id?: string;
+      focusElement?: string;
+      createNewStack?: boolean;
+      dragEvent?: React.DragEvent;
     }) => {
       const config = {
         type: 'react-component' as const,
@@ -206,7 +226,15 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
       id = nanoid(),
       focusElement = LayoutUtils.DEFAULT_FOCUS_SELECTOR,
       createNewStack = false,
-      dragEvent = null,
+      dragEvent,
+    }: {
+      title?: string;
+      metadata?: Record<string, unknown>;
+      panelState?: Record<string, unknown> | null;
+      id?: string;
+      focusElement?: string;
+      createNewStack?: boolean;
+      dragEvent?: React.DragEvent;
     }) => {
       const config = {
         type: 'react-component' as const,

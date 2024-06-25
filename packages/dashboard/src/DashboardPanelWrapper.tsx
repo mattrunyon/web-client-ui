@@ -1,8 +1,9 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
+import type { PanelProps } from './DashboardPlugin';
 
 export function DashboardPanelWrapper({
   children,
-}: PropsWithChildren<object>): JSX.Element {
+}: PropsWithChildren<PanelProps>): JSX.Element {
   // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
 }

@@ -49,13 +49,13 @@ const useTable = (
   }, [columns, table, firstRow, lastRow]);
 
   const handleUpdate = useCallback(
-    ({ detail }) => {
+    ({ detail }: CustomEvent<dh.ViewportData>) => {
       if (!columns) {
         log.error('Columns not initialized.');
         return;
       }
       const viewportData = columns.map(column =>
-        (detail.rows as dh.Row[]).map(r => r.get(column))
+        detail.rows.map(r => r.get(column))
       );
       setData(viewportData);
     },

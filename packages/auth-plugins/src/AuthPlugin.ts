@@ -12,14 +12,11 @@ export type AuthConfigMap = Map<string, string>;
 export type AuthPluginProps = {
   /** Map from config keys to their values */
   authConfigValues: AuthConfigMap;
-
-  /**
-   * The children to render after authentication is completed.
-   */
-  children: React.ReactNode;
 };
 
-export type AuthPluginComponent = React.FunctionComponent<AuthPluginProps>;
+export type AuthPluginComponent = React.FunctionComponent<
+  React.PropsWithChildren<AuthPluginProps>
+>;
 
 /**
  * Whether the auth plugin is available given the current configuration

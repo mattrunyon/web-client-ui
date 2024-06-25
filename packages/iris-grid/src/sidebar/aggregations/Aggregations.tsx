@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -60,22 +60,22 @@ function Aggregations({
     [aggregations]
   );
   const [selectedOperation, setSelectedOperation] = useState(options[0]);
-  const [selectedRanges, setSelectedRanges] = useState<Range[]>([]);
+  const [selectedRanges, setSelectedRanges] = useState<readonly Range[]>([]);
   const changeSettings = useCallback(
-    changedSettings => {
+    (changedSettings: Partial<AggregationSettings>) => {
       onChange({ ...settings, ...changedSettings });
     },
     [onChange, settings]
   );
   const changeAggregations = useCallback(
-    newAggregations => {
+    (newAggregations: readonly Aggregation[] | undefined) => {
       changeSettings({ aggregations: newAggregations });
     },
     [changeSettings]
   );
 
   const changeShowOnTop = useCallback(
-    newShowOnTop => {
+    (newShowOnTop: boolean | undefined) => {
       changeSettings({ showOnTop: newShowOnTop });
     },
     [changeSettings]
@@ -88,12 +88,12 @@ function Aggregations({
   }, []);
 
   const handleDragEnd = useCallback(
-    ({ destination, source }) => {
+    ({ destination, source }: DropResult) => {
       log.debug('handleDragEnd', destination, source);
 
       DragUtils.stopDragging();
 
-      if (destination === null) {
+      if (destination == null) {
         return;
       }
 
@@ -123,8 +123,8 @@ function Aggregations({
   );
 
   const handleOperationChange = useCallback(
-    operation => {
-      setSelectedOperation(operation);
+    (operation: string) => {
+      setSelectedOperation(operation as AggregationOperation);
     },
     [setSelectedOperation]
   );
@@ -146,14 +146,14 @@ function Aggregations({
   );
 
   const handleAggregationSelectionChange = useCallback(
-    newSelectedRanges => {
+    (newSelectedRanges: readonly Range[]) => {
       setSelectedRanges(newSelectedRanges);
     },
     [setSelectedRanges]
   );
 
   const handleAggregationSelect = useCallback(
-    itemIndex => {
+    (itemIndex: number) => {
       const aggregation = aggregations[itemIndex];
       if (!AggregationUtils.isRollupOperation(aggregation.operation)) {
         onEdit(aggregation);

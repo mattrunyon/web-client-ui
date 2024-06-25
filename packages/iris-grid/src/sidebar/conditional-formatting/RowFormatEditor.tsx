@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Log from '@deephaven/log';
 import type { dh as DhType } from '@deephaven/jsapi-types';
-import { ComboBox } from '@deephaven/components';
+import { ComboBox, ItemKey } from '@deephaven/components';
 import {
   BaseFormatConfig,
   ChangeCallback,
@@ -9,6 +9,8 @@ import {
   getConditionConfig,
   getDefaultStyleConfig,
   ModelColumn,
+  type ConditionConfig,
+  type FormatStyleConfig,
 } from './ConditionalFormattingUtils';
 import ConditionEditor from './ConditionEditor';
 import StyleEditor from './StyleEditor';
@@ -55,7 +57,7 @@ function RowFormatEditor(props: RowFormatEditorProps): JSX.Element {
   const [selectedStyle, setStyle] = useState(config.style);
 
   const handleColumnChange = useCallback(
-    value => {
+    (value: ItemKey | null) => {
       const newColumn = columns.find(({ name }) => name === value);
       if (newColumn !== undefined) {
         setColumn(newColumn);
@@ -71,7 +73,7 @@ function RowFormatEditor(props: RowFormatEditorProps): JSX.Element {
   );
 
   const handleConditionChange = useCallback(
-    (updatedConditionConfig, isValid) => {
+    (updatedConditionConfig: ConditionConfig, isValid: boolean) => {
       log.debug('handleConditionChange', updatedConditionConfig, isValid);
       setConditionConfig(updatedConditionConfig);
       setConditionValid(isValid);
@@ -79,10 +81,13 @@ function RowFormatEditor(props: RowFormatEditorProps): JSX.Element {
     []
   );
 
-  const handleStyleChange = useCallback(updatedStyleConfig => {
-    log.debug('handleStyleChange', updatedStyleConfig);
-    setStyle(updatedStyleConfig);
-  }, []);
+  const handleStyleChange = useCallback(
+    (updatedStyleConfig: FormatStyleConfig) => {
+      log.debug('handleStyleChange', updatedStyleConfig);
+      setStyle(updatedStyleConfig);
+    },
+    []
+  );
 
   useEffect(
     function updateRowFormat() {
