@@ -55,11 +55,11 @@
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
-    "react-is": ">=16.8.0"
+    "react-is": ">=16.8.0",
+    "react-redux": "^7.x"
   },
   "devDependencies": {
-    "@deephaven/mocks": "file:../mocks",
-    "react-redux": "^7.2.4"
+    "@deephaven/mocks": "file:../mocks"
   },
   "files": [
     "dist",

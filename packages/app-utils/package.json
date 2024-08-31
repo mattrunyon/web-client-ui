@@ -21,12 +21,6 @@
     "build": "cross-env NODE_ENV=production run-p build:*",
     "build:babel": "babel ./src --out-dir ./dist --extensions \".ts,.tsx,.js,.jsx\" --source-maps --root-mode upward"
   },
-  "devDependencies": {
-    "react": "^17.x",
-    "react-dom": "^17.x",
-    "react-redux": "^7.x",
-    "redux": "^4.x"
-  },
   "dependencies": {
     "@adobe/react-spectrum": "3.35.1",
     "@deephaven/auth-plugins": "file:../auth-plugins",

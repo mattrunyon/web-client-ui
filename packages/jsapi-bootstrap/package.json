@@ -28,9 +28,6 @@
     "@deephaven/react-hooks": "file:../react-hooks",
     "@deephaven/utils": "file:../utils"
   },
-  "devDependencies": {
-    "react": "^17.x"
-  },
   "peerDependencies": {
     "react": ">=16.8.0"
   },

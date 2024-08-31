@@ -36,8 +36,7 @@
     "prop-types": "^15.8.1"
   },
   "devDependencies": {
-    "@deephaven/jsapi-shim": "file:../jsapi-shim",
-    "react-test-renderer": "^17.0.2"
+    "@deephaven/jsapi-shim": "file:../jsapi-shim"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
