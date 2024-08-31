@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, type ReactNode } from 'react';
 import './SelectValueList.scss';
 import classNames from 'classnames';
 import memoize from 'memoizee';
@@ -81,6 +81,10 @@ class SelectValueList<T> extends PureComponent<SelectValueListProps<T>> {
         height: rowHeight,
       };
       const text = displayValue != null ? displayValue : value;
+
+      if (!React.isValidElement(text)) {
+        throw new Error('Invalid list value');
+      }
 
       return (
         // Tab index is needed so the item could be a related target in the blur event details

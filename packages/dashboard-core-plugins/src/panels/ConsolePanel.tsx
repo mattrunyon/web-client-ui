@@ -94,6 +94,9 @@ export class ConsolePanel extends PureComponent<
 
   static contextType = LayoutManagerContext;
 
+  // eslint-disable-next-line react/sort-comp, react/static-property-placement
+  declare context: React.ContextType<typeof LayoutManagerContext>;
+
   constructor(props: ConsolePanelProps) {
     super(props);
 
@@ -253,6 +256,7 @@ export class ConsolePanel extends PureComponent<
     object: dh.ide.VariableDescriptor & { title?: string },
     forceOpen = true
   ): void {
+    assertNotNull(this.context, 'LayoutManager not available');
     const { root } = this.context;
     const oldPanelId =
       object.title != null ? this.getItemId(object.title, false) : null;

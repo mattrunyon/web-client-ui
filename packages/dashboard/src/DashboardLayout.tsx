@@ -50,7 +50,7 @@ const DEFAULT_CALLBACK = (): void => undefined;
 const STATE_CHANGE_THROTTLE_MS = 1000;
 
 // If a component isn't registered, just pass through the props so they are saved if a plugin is loaded later
-const FALLBACK_CALLBACK = (props: unknown): unknown => props;
+const FALLBACK_CALLBACK = (props: PanelProps): PanelProps => props;
 
 type DashboardData = {
   closed?: ClosedPanels;
@@ -71,7 +71,7 @@ interface DashboardLayoutProps {
   emptyDashboard?: React.ReactNode;
 
   /** Component to wrap each panel with */
-  panelWrapper?: ComponentType;
+  panelWrapper?: ComponentType<React.PropsWithChildren<PanelProps>>;
 }
 
 /**
@@ -104,8 +104,11 @@ export function DashboardLayout({
     layout.getReactChildren()
   );
 
-  const hydrateMap = useMemo(() => new Map(), []);
-  const dehydrateMap = useMemo(() => new Map(), []);
+  const hydrateMap = useMemo(() => new Map<string, PanelHydrateFunction>(), []);
+  const dehydrateMap = useMemo(
+    () => new Map<string, PanelDehydrateFunction>(),
+    []
+  );
   const registerComponent = useCallback(
     (
       name: string,
@@ -169,11 +172,18 @@ export function DashboardLayout({
     [hydrate, dehydrate, hydrateMap, dehydrateMap, layout, panelWrapper]
   );
   const hydrateComponent = useCallback(
-    (name, props) => (hydrateMap.get(name) ?? FALLBACK_CALLBACK)(props, id),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (name: string, props: any) =>
+      (hydrateMap.get(name) ?? FALLBACK_CALLBACK)(props, id) as PanelProps,
     [hydrateMap, id]
   );
   const dehydrateComponent = useCallback(
-    (name, config) => (dehydrateMap.get(name) ?? FALLBACK_CALLBACK)(config, id),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (name: string, config: any) =>
+      (dehydrateMap.get(name) ?? FALLBACK_CALLBACK)(
+        config,
+        id
+      ) as ReactComponentConfig,
     [dehydrateMap, id]
   );
   const panelManager = useMemo(
@@ -263,7 +273,8 @@ export function DashboardLayout({
     [layout.eventHub]
   );
 
-  const handleComponentCreated = useCallback(item => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleComponentCreated = useCallback((item: any) => {
     log.debug2('handleComponentCreated', item);
 
     if (
@@ -307,7 +318,8 @@ export function DashboardLayout({
         log.debug('Setting new layout content...');
         const content = LayoutUtils.hydrateLayoutConfig(
           layoutConfig,
-          hydrateComponent
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          hydrateComponent as any
         );
         // Remove the old layout before add the new one
         while (layout.root.contentItems.length > 0) {

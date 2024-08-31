@@ -1,4 +1,5 @@
-import { Key, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import type { Key } from '@react-types/shared';
 import {
   getItemKey,
   ItemKey,

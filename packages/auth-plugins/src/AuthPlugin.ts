@@ -9,10 +9,10 @@ export type AuthConfigMap = Map<string, string>;
 /**
  * Props for the auth plugin component to render
  */
-export type AuthPluginProps = {
+export type AuthPluginProps = React.PropsWithChildren<{
   /** Map from config keys to their values */
   authConfigValues: AuthConfigMap;
-};
+}>;
 
 export type AuthPluginComponent = React.FunctionComponent<
   React.PropsWithChildren<AuthPluginProps>

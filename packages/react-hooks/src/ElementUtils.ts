@@ -1,9 +1,4 @@
-import {
-  isValidElement,
-  JSXElementConstructor,
-  ReactElement,
-  ReactNode,
-} from 'react';
+import { isValidElement, JSXElementConstructor, ReactElement } from 'react';
 import { InferComponentProps } from '@deephaven/utils';
 
 /**
@@ -18,7 +13,7 @@ export function isElementOfType<
     | string
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | JSXElementConstructor<any>,
->(node: ReactNode, type: T): node is ReactElement<InferComponentProps<T>, T> {
+>(node: unknown, type: T): node is ReactElement<InferComponentProps<T>, T> {
   return isValidElement(node) && node.type === type;
 }
 

@@ -28,6 +28,7 @@ import { SpectrumThemeProvider } from '../theme/SpectrumThemeProvider';
 const POPPER_CLASS_NAME = 'popper';
 
 interface PopperProps {
+  children: React.ReactNode;
   options: PopperOptions;
   className: string;
   timeout: number;
@@ -46,20 +47,6 @@ interface PopperState {
 }
 
 class Popper extends Component<PopperProps, PopperState> {
-  static propTypes = {
-    children: PropTypes.node.isRequired,
-    options: PropTypes.shape({}),
-    className: PropTypes.string,
-    timeout: PropTypes.number,
-    onEntered: PropTypes.func,
-    onExited: PropTypes.func,
-    isShown: PropTypes.bool,
-    closeOnBlur: PropTypes.bool,
-    interactive: PropTypes.bool,
-    referenceObject: PropTypes.shape({}),
-    'data-testid': PropTypes.string,
-  };
-
   static defaultProps = {
     options: {},
     className: '',

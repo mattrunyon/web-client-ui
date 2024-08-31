@@ -1,5 +1,5 @@
-import { Key, ReactElement, ReactNode } from 'react';
-import type { ItemRenderer } from '@react-types/shared';
+import { ReactElement, ReactNode } from 'react';
+import type { Key, ItemRenderer } from '@react-types/shared';
 import { isElementOfType } from '@deephaven/react-hooks';
 import { ensureArray, KeyedItem, SelectionT } from '@deephaven/utils';
 import {
@@ -192,9 +192,7 @@ export async function getPositionOfSelectedItemElement<
  * @param node The node to check
  * @returns True if the node is a Section element
  */
-export function isSectionElement<T>(
-  node: ReactNode
-): node is SectionElement<T> {
+export function isSectionElement<T>(node: unknown): node is SectionElement<T> {
   return isElementOfType(node, Section);
 }
 
@@ -203,7 +201,7 @@ export function isSectionElement<T>(
  * @param node The node to check
  * @returns True if the node is an Item element
  */
-export function isItemElement<T>(node: ReactNode): node is ItemElement<T> {
+export function isItemElement<T>(node: unknown): node is ItemElement<T> {
   return isElementOfType(node, Item);
 }
 
@@ -279,7 +277,7 @@ export function isNormalizedSection(
  * @param node The node to check
  * @returns True if the node is an item or section
  */
-export function isItemOrSection(node: ReactNode): node is ItemOrSection {
+export function isItemOrSection(node: unknown): node is ItemOrSection {
   return (
     typeof node === 'string' ||
     typeof node === 'number' ||

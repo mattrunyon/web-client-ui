@@ -129,7 +129,7 @@ class ChartBuilder extends PureComponent<ChartBuilderProps, ChartBuilderState> {
     };
   }
 
-  getTypes(): DhType.plot.SeriesPlotStyle[] {
+  getTypes(): DhType.plot.SeriesPlotStyleType[] {
     const { model } = this.props;
     const { dh } = model;
     return [
@@ -147,8 +147,8 @@ class ChartBuilder extends PureComponent<ChartBuilderProps, ChartBuilderState> {
    * Just replaces underscores with spaces and capitals the first letter of each word.
    */
   getTypeName(
-    type: DhType.plot.SeriesPlotStyle
-  ): string | DhType.plot.SeriesPlotStyle {
+    type: DhType.plot.SeriesPlotStyleType
+  ): string | DhType.plot.SeriesPlotStyleType {
     const { model } = this.props;
     const { dh } = model;
     switch (type) {

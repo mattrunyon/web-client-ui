@@ -158,7 +158,7 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
       id?: string;
       focusElement?: string;
       createNewStack?: boolean;
-      dragEvent?: React.DragEvent;
+      dragEvent?: MouseEvent;
     }) => {
       const config = {
         type: 'react-component' as const,
@@ -196,7 +196,7 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
       id?: string;
       focusElement?: string;
       createNewStack?: boolean;
-      dragEvent?: React.DragEvent;
+      dragEvent?: MouseEvent;
     }) => {
       const config = {
         type: 'react-component' as const,
@@ -234,7 +234,7 @@ export function FilterPlugin(props: FilterPluginProps): JSX.Element | null {
       id?: string;
       focusElement?: string;
       createNewStack?: boolean;
-      dragEvent?: React.DragEvent;
+      dragEvent?: MouseEvent;
     }) => {
       const config = {
         type: 'react-component' as const,
