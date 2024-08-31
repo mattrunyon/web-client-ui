@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { TestUtils } from '@deephaven/utils';
 import usePopoverOnScrollRef from './usePopoverOnScrollRef';
 

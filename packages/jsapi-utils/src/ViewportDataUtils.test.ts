@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { dh } from '@deephaven/jsapi-types';
 import { TestUtils } from '@deephaven/utils';
 import {

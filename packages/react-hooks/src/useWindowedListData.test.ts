@@ -3,7 +3,7 @@ import {
   Renderer,
   renderHook,
   RenderHookResult,
-} from '@testing-library/react-hooks';
+} from '@testing-library/react';
 import { TestUtils } from '@deephaven/utils';
 import useWindowedListData, {
   defaultGetKey,
