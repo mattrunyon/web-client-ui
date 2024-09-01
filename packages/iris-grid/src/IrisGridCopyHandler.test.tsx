@@ -20,8 +20,6 @@ const mockedCopyToClipboard = copyToClipboard as jest.MockedFunction<
   (text: string) => Promise<void>
 >;
 
-jest.useFakeTimers();
-
 const irisGridTestUtils = new IrisGridTestUtils(dh);
 
 const DEFAULT_EXPECTED_TEXT = `0,0\t0,1\t0,2\t0,3\t0,4
@@ -110,7 +108,7 @@ it('copies immediately if less than 10,000 rows of data', async () => {
 });
 
 it('prompts to copy if more than 10,000 rows of data', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup();
   const model = makeModel();
   const ranges = GridTestUtils.makeRanges(1, 10001);
   const copyOperation = makeCopyRangesOperation(ranges);
@@ -136,7 +134,7 @@ it('prompts to copy if more than 10,000 rows of data', async () => {
 });
 
 it('shows click to copy if async copy fails', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup();
   const error = new Error('Test copy error');
   mockedCopyToClipboard.mockReturnValueOnce(Promise.reject(error));
 
@@ -165,7 +163,7 @@ it('shows click to copy if async copy fails', async () => {
 });
 
 it('retry option available if fetching fails', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup();
   const ranges = GridTestUtils.makeRanges();
   const copyOperation = makeCopyRangesOperation(ranges);
   const model = makeModel();

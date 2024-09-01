@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { dh as DhType } from '@deephaven/jsapi-types';
 import { usePickerItemScale } from '@deephaven/components';
 import {
@@ -38,6 +38,17 @@ jest.mock('@deephaven/react-hooks', () => ({
 }));
 
 const { asMock, createMockProxy } = TestUtils;
+
+/**
+ * This is only used for upgrading these tests to React 18 and should not be made a general utility.
+ * waitFor some actual value in a hook is the new way to replace waitForNextUpdate.
+ * These tests have some that just wait for any change, so this is a simple way to do that, but is frowned upon.
+ * @param hookResult The result of a renderHook call
+ */
+async function waitForHookChange(hookResult: { current: unknown }) {
+  const previous = hookResult.current;
+  await waitFor(() => expect(hookResult.current).not.toBe(previous));
+}
 
 interface MockItem {
   type: 'mock.item';
@@ -94,6 +105,25 @@ function mockUseViewportData(size: number) {
     );
 }
 
+async function renderOnce(
+  overrides?: Partial<Parameters<typeof usePickerWithSelectedValues>[0]>
+) {
+  const hookResult = renderHook(() =>
+    usePickerWithSelectedValues({
+      maybeTable: mockTable.usersAndGroups,
+      columnName: mock.columnName,
+      mapItemToValue: mock.mapItemToValue,
+      filterConditionFactories: mock.filterConditionFactories,
+      timeZone: 'mock.timeZone',
+      ...overrides,
+    })
+  );
+
+  await waitFor(() => expect(hookResult.result.current).toBeDefined());
+
+  return hookResult;
+}
+
 async function renderOnceAndWait(
   overrides?: Partial<Parameters<typeof usePickerWithSelectedValues>[0]>
 ) {
@@ -108,7 +138,7 @@ async function renderOnceAndWait(
     })
   );
 
-  await hookResult.waitForNextUpdate();
+  await waitForHookChange(hookResult.result);
 
   return hookResult;
 }
@@ -219,13 +249,13 @@ it('should memoize results', async () => {
 
   rerender();
 
-  expect(result.current).toBe(prevResult);
+  await waitFor(() => expect(result.current).toBe(prevResult));
 });
 
 it.each([undefined, false, true])(
   'should filter viewport by search text after debounce',
   async trimSearchText => {
-    const { result, waitForNextUpdate } = await renderOnceAndWait({
+    const { result } = await renderOnceAndWait({
       trimSearchText,
     });
 
@@ -245,7 +275,7 @@ it.each([undefined, false, true])(
 
     // debouncedSearchText change will trigger another doesColumnValueExist
     // call which will update state once resolved
-    await waitForNextUpdate();
+    await waitForHookChange(result);
 
     expect(createSearchTextFilter).toHaveBeenCalledWith(
       tableUtils,
@@ -280,7 +310,7 @@ it.each([
     // Setup test with search text already set
     asMock(mock.viewportData.findItem).mockReturnValue(maybeItem);
 
-    const { result, waitForNextUpdate } = await renderOnceAndWait();
+    const { result } = await renderOnceAndWait();
 
     act(() => {
       result.current.onSearchTextChange(mock.searchText);
@@ -289,9 +319,9 @@ it.each([
 
     // debouncedSearchText change will trigger another doesColumnValueExist
     // call which will update state once resolved
-    await waitForNextUpdate();
-
-    expect(result.current.searchText).toEqual(mock.searchText);
+    await waitFor(() =>
+      expect(result.current.searchText).toEqual(mock.searchText)
+    );
 
     jest.clearAllMocks();
     // End setup
@@ -341,9 +371,7 @@ it.each([
 
     // debouncedSearchText change will trigger another doesColumnValueExist
     // call which will update state once resolved
-    await waitForNextUpdate();
-
-    expect(result.current.selectedKey).toBeNull();
+    await waitFor(() => expect(result.current.selectedKey).toBeNull());
     expect(result.current.selectedValueMap).toEqual(expectedValueMap);
   }
 );
@@ -376,7 +404,7 @@ describe('Flags', () => {
         async (searchText, listSize) => {
           mockUseViewportData(listSize);
 
-          const { result, waitForNextUpdate } = await renderOnceAndWait({
+          const { result } = await renderOnceAndWait({
             trimSearchText,
           });
 
@@ -401,7 +429,7 @@ describe('Flags', () => {
           // debouncedSearchText change will trigger another doesColumnValueExist
           // call which will update state once resolved
           if (searchTextMaybeTrimmed !== '') {
-            await waitForNextUpdate();
+            await waitForHookChange(result);
           }
 
           expect(result.current).toMatchObject({
@@ -420,14 +448,12 @@ describe('onAddValues', () => {
   it('should do nothing if given empty values', async () => {
     const { result } = await renderOnceAndWait();
 
-    const initialRenderCount = result.all.length;
     const prevResult = result.current;
 
     act(() => {
       result.current.onAddValues(new Set());
     });
 
-    expect(result.all.length).toEqual(initialRenderCount + 1);
     expect(result.current.selectedValueMap).toBe(prevResult.selectedValueMap);
   });
 
@@ -491,14 +517,16 @@ describe('searchTextExists', () => {
         isDebouncing,
       } as ReturnType<typeof useDebouncedValue>);
 
-      const { result } = await renderOnceAndWait();
+      const { result } = await renderOnce();
 
       expect(useDebouncedValue).toHaveBeenCalledWith('', SEARCH_DEBOUNCE_MS);
 
       if (valueExistsIsLoading || isDebouncing) {
-        expect(result.current.searchTextExists).toBeNull();
+        await waitFor(() => expect(result.current.searchTextExists).toBeNull());
       } else {
-        expect(result.current.searchTextExists).toEqual(valueExists);
+        await waitFor(() =>
+          expect(result.current.searchTextExists).toEqual(valueExists)
+        );
       }
     }
   );
@@ -509,7 +537,9 @@ describe('searchTextExists', () => {
       asMock(tableUtils.doesColumnValueExist).mockResolvedValue(exists);
 
       const { result } = await renderOnceAndWait();
-      expect(result.current.searchTextExists).toEqual(exists);
+      await waitFor(() =>
+        expect(result.current.searchTextExists).toEqual(exists)
+      );
     }
   );
 });

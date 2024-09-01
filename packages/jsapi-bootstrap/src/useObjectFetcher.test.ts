@@ -88,13 +88,11 @@ it('should resolve the fetcher when set in the context', async () => {
   const { result } = renderHook(() => useObjectFetcher());
   await act(flushPromises);
   expect(result.current).toEqual(fetcher);
-  expect(result.error).toBeUndefined();
   expect(fetcher).not.toHaveBeenCalled();
 });
 
 it('throws an error if the context is null', async () => {
   asMock(useContext).mockReturnValue(null);
 
-  const { result } = renderHook(() => useObjectFetcher());
-  expect(result.error).not.toBeNull();
+  expect(() => renderHook(() => useObjectFetcher())).toThrow();
 });

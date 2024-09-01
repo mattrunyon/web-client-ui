@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import Modal from './Modal';
@@ -64,9 +64,9 @@ it('renders when isOpen changes', async () => {
 
   // It will fade out, so it will still be visible until the animation is complete
   expect(screen.queryByRole('dialog')).toBeInTheDocument();
-  jest.runAllTimers();
-  jest.useRealTimers(); // Reset so other tests don't use fake timers
+  act(() => jest.runAllTimers());
   expect(screen.queryByRole('dialog')).toBeNull();
+  jest.useRealTimers(); // Reset so other tests don't use fake timers
 });
 
 it('calls toggle when esc key is pressed', () => {

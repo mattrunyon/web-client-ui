@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import dh from '@deephaven/jsapi-shim';
 import { ContextActions, DropdownActions } from '@deephaven/components';
 import { vsCheck } from '@deephaven/icons';
@@ -40,7 +40,7 @@ it('does not show a dropdown menu when there are no actions', async () => {
 });
 
 it('dropdown menu disappears on toggle', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockClick = jest.fn();
   const title = 'action';
   makeConsoleStatusBarWrapper(() => [
@@ -58,7 +58,7 @@ it('dropdown menu disappears on toggle', async () => {
   expect(dropdown).toBeTruthy();
   await user.click(dropdown);
   expect(mockClick).toBeCalled();
-  jest.runAllTimers();
+  act(() => jest.runAllTimers());
   dropdown = screen.queryByText(title);
   expect(dropdown).toBeFalsy();
 });

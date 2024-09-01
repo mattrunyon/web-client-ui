@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '@deephaven/components/scss/BaseStyleSheet.scss'; // Do NOT move any lower. This needs to be imported before any other styles
 import { LoadingOverlay, preloadTheme } from '@deephaven/components';
 import { ApiBootstrap } from '@deephaven/jsapi-bootstrap';
@@ -46,7 +46,9 @@ async function getCorePlugins() {
   ];
 }
 
-ReactDOM.render(
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.getElementById('root')!);
+root.render(
   <ApiBootstrap apiUrl={apiURL.href} setGlobally>
     <Suspense fallback={<LoadingOverlay />}>
       <AppBootstrap
@@ -57,6 +59,5 @@ ReactDOM.render(
         <App />
       </AppBootstrap>
     </Suspense>
-  </ApiBootstrap>,
-  document.getElementById('root')
+  </ApiBootstrap>
 );

@@ -20,7 +20,6 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { CSSTransition } from 'react-transition-group';
 import PopperJs, { PopperOptions, ReferenceObject } from 'popper.js';
-import PropTypes from 'prop-types';
 import ThemeExport from '../ThemeExport';
 import './Popper.scss';
 import { SpectrumThemeProvider } from '../theme/SpectrumThemeProvider';

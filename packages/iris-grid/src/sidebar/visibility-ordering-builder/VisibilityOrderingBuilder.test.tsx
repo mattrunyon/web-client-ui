@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GridUtils } from '@deephaven/grid';
 import type { MoveOperation } from '@deephaven/grid';
@@ -197,7 +197,7 @@ test('Renders a grid of only immovable items', () => {
 });
 
 test('Select and deselects items', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   render(<Builder />);
   const elements = screen.getAllByText(ALL_PREFIX, { exact: false });
   await clickItem(user, 0);
@@ -223,7 +223,7 @@ test('Select and deselects items', async () => {
 });
 
 test('Select and deselects groups', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   render(<BuilderWithGroups />);
   const elements = screen.getAllByText(ALL_PREFIX, { exact: false });
 
@@ -253,7 +253,7 @@ test('Select and deselects groups', async () => {
 });
 
 test('Moves items up with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const getUpButton = () => screen.getByLabelText('Move selection up');
   const { rerender } = render(<Builder onMovedColumnsChanged={mockHandler} />);
@@ -302,7 +302,7 @@ test('Moves items up with button', async () => {
 });
 
 test('Moves groups up with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const getUpButton = () => screen.getByLabelText('Move selection up');
   const model = makeModelWithGroups();
@@ -327,7 +327,7 @@ test('Moves groups up with button', async () => {
 });
 
 test('Moves items in and out of groups with up button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockMoveHandler = jest.fn();
   const mockGroupHandler = jest.fn() as jest.MockedFunction<
     VisibilityOrderingBuilder['props']['onColumnHeaderGroupChanged']
@@ -402,7 +402,7 @@ test('Moves items in and out of groups with up button', async () => {
 });
 
 test('Moves items down with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const getDownButton = () => screen.getByLabelText('Move selection down');
   const { rerender } = render(<Builder onMovedColumnsChanged={mockHandler} />);
@@ -450,7 +450,7 @@ test('Moves items down with button', async () => {
 });
 
 test('Moves groups down with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const getDownButton = () => screen.getByLabelText('Move selection down');
   const model = makeModelWithGroups();
@@ -483,7 +483,7 @@ test('Moves groups down with button', async () => {
 });
 
 test('Moves items in and out of groups with down button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockMoveHandler = jest.fn();
   const mockGroupHandler = jest.fn() as jest.MockedFunction<
     VisibilityOrderingBuilder['props']['onColumnHeaderGroupChanged']
@@ -587,7 +587,7 @@ test('Moves items in and out of groups with down button', async () => {
 });
 
 test('Moves items to top with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn((_, cb) => cb());
   const getTopButton = () => screen.getByLabelText('Move selection to top');
   const { rerender } = render(<Builder onMovedColumnsChanged={mockHandler} />);
@@ -627,7 +627,7 @@ test('Moves items to top with button', async () => {
 });
 
 test('Moves groups to top with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn((_, cb) => cb());
   const getTopButton = () => screen.getByLabelText('Move selection to top');
   const model = makeModelWithGroups();
@@ -655,7 +655,7 @@ test('Moves groups to top with button', async () => {
 });
 
 test('Moves items to bottom with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn((_, cb) => cb());
   const getBottomButton = () =>
     screen.getByLabelText('Move selection to bottom');
@@ -697,7 +697,7 @@ test('Moves items to bottom with button', async () => {
 });
 
 test('Moves groups to bottom with button', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn((_, cb) => cb());
   const getBottomButton = () =>
     screen.getByLabelText('Move selection to bottom');
@@ -726,7 +726,7 @@ test('Moves groups to bottom with button', async () => {
 });
 
 test('Sorts items', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const { rerender } = render(
     <BuilderWithGroups onMovedColumnsChanged={mockHandler} />
@@ -764,7 +764,7 @@ test('Sorts items', async () => {
 });
 
 test('Sort ascending items with frozen/front/back columns', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const sortButton = () => screen.getByLabelText('Sort ascending');
   const model = irisGridTestUtils.makeModel(
@@ -786,7 +786,7 @@ test('Sort ascending items with frozen/front/back columns', async () => {
 });
 
 test('Sort descending items with frozen/front/back columns', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const sortButton = () => screen.getByLabelText('Sort descending');
   const model = irisGridTestUtils.makeModel(
@@ -815,7 +815,7 @@ test('Sort descending items with frozen/front/back columns', async () => {
 });
 
 test('Creates groups', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const model = makeModel();
   const mockGroupHandler = jest.fn() as jest.MockedFunction<
     VisibilityOrderingBuilder['props']['onColumnHeaderGroupChanged']
@@ -869,7 +869,7 @@ test('Creates groups', async () => {
 });
 
 test('Only allows 1 new group at a time', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const model = makeModelWithGroups([
     {
       children: [`${COLUMN_PREFIX}0`, `${COLUMN_PREFIX}1`],
@@ -904,7 +904,7 @@ test('Only allows 1 new group at a time', async () => {
 });
 
 test('Shows validation error for new group on blur when never typed in', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
   const model = makeModelWithGroups([
     {
@@ -930,7 +930,7 @@ test('Shows validation error for new group on blur when never typed in', async (
 });
 
 test('Search columns', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
 
   const model = makeModelWithGroups([
     ...COLUMN_HEADER_GROUPS,
@@ -945,32 +945,32 @@ test('Search columns', async () => {
   const searchInput = screen.getByPlaceholderText('Search');
 
   await user.type(searchInput, GROUP_PREFIX);
-  jest.advanceTimersByTime(500); // Advance past debounce timeout.
+  act(() => jest.advanceTimersByTime(500)); // Advance past debounce timeout
 
   // 1 is first group, 2 and 3 are children. 4 is 2nd group, 5 and 6 are children
   expectSelection([1, 2, 3, 4, 5, 6]);
 
   await user.type(searchInput, 'One');
-  jest.advanceTimersByTime(500);
+  act(() => jest.advanceTimersByTime(500));
   expectSelection([1, 2, 3]);
 
   await user.clear(searchInput);
-  jest.advanceTimersByTime(500);
+  act(() => jest.advanceTimersByTime(500));
   expectSelection([]);
 
   await user.type(searchInput, 'asdf');
-  jest.advanceTimersByTime(500);
+  act(() => jest.advanceTimersByTime(500));
   expectSelection([]);
 
   await user.clear(searchInput);
-  jest.advanceTimersByTime(500);
+  act(() => jest.advanceTimersByTime(500));
   await user.type(searchInput, ColumnHeaderGroup.NEW_GROUP_PREFIX);
-  jest.advanceTimersByTime(500);
+  act(() => jest.advanceTimersByTime(500));
   expectSelection([]);
 });
 
 test('Edit group name', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const getEditButton = () => screen.getAllByLabelText('Edit')[1]; // Edit the nested group
   const originalName = NESTED_COLUMN_HEADER_GROUPS[1].name;
@@ -1039,7 +1039,7 @@ test('Edit group name', async () => {
 });
 
 test('Delete group', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const { rerender } = render(
     <BuilderWithNestedGroups onColumnHeaderGroupChanged={mockHandler} />
@@ -1071,7 +1071,7 @@ test('Delete group', async () => {
 });
 
 test('Change group color', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const getColorButton = () => screen.getAllByLabelText('Set color')[0];
   render(<BuilderWithGroups onColumnHeaderGroupChanged={mockHandler} />);
@@ -1094,7 +1094,7 @@ test('Change group color', async () => {
 });
 
 test('Toggles all visibility', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const { rerender } = render(
     <Builder onColumnVisibilityChanged={mockHandler} />
@@ -1117,7 +1117,7 @@ test('Toggles all visibility', async () => {
 });
 
 test('Toggles selected visibility', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   const { rerender } = render(
     <BuilderWithGroups onColumnVisibilityChanged={mockHandler} />
@@ -1142,7 +1142,7 @@ test('Toggles selected visibility', async () => {
 });
 
 test('Toggles individual visibility', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockHandler = jest.fn();
   render(<BuilderWithGroups onColumnVisibilityChanged={mockHandler} />);
 
@@ -1154,7 +1154,7 @@ test('Toggles individual visibility', async () => {
 });
 
 test('Resets state', async () => {
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const mockReset = jest.fn();
   const model = makeModelWithGroups();
   render(<Builder model={model} onReset={mockReset} />);
@@ -1169,7 +1169,7 @@ test('Sets drag item display string on multi-select', async () => {
   // This is a hacky test and calls the method directly
   // RTL can't simulate drag and drop (in jsdom at least)
   // So this is the best option for now
-  const user = userEvent.setup({ delay: null });
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
   const builder = React.createRef<VisibilityOrderingBuilder>();
   render(<Builder builderRef={builder} />);
 
@@ -1222,14 +1222,14 @@ test('On drag start/end', () => {
     getTreeItems(COLUMNS, [], [], [], [`${COLUMN_PREFIX}0`])
   );
 
-  builder.current?.handleDragStart(`${COLUMN_PREFIX}0`);
+  act(() => builder.current?.handleDragStart(`${COLUMN_PREFIX}0`));
   expectSelection([0]);
 
   // This hits the path where the item is already selected in dragStart
-  builder.current?.handleDragStart(`${COLUMN_PREFIX}0`);
+  act(() => builder.current?.handleDragStart(`${COLUMN_PREFIX}0`));
   expectSelection([0]);
 
-  builder.current?.handleDragEnd(items[0], items[1]);
+  act(() => builder.current?.handleDragEnd(items[0], items[1]));
   expect(mockGroupHandler).toBeCalledWith([]);
   expect(mockMoveHandler).toBeCalledWith([{ from: 0, to: 1 }]);
 });
@@ -1238,13 +1238,13 @@ test('changeSelectedColumn moves queried column index and loops', () => {
   const builder = React.createRef<VisibilityOrderingBuilder>();
   render(<Builder builderRef={builder} />);
 
-  builder.current?.searchColumns('TestColumn');
+  act(() => builder.current?.searchColumns('TestColumn'));
   expect(builder.current?.state.selectedColumns.size).toEqual(10);
 
-  builder.current?.changeSelectedColumn('back');
+  act(() => builder.current?.changeSelectedColumn('back'));
   expect(builder.current?.state.queriedColumnIndex).toEqual(9);
 
-  builder.current?.changeSelectedColumn('forward');
+  act(() => builder.current?.changeSelectedColumn('forward'));
   expect(builder.current?.state.queriedColumnIndex).toEqual(0);
 });
 
@@ -1252,9 +1252,13 @@ test('adjustQueriedIndex sets queriedColumnRange to prevIndex = 9 and nextIndex 
   const builder = React.createRef<VisibilityOrderingBuilder>();
   render(<Builder builderRef={builder} />);
 
-  builder.current?.searchColumns('TestColumn');
+  act(() => {
+    builder.current?.searchColumns('TestColumn');
+  });
 
-  builder.current?.adjustQueriedIndex('Test');
+  act(() => {
+    builder.current?.adjustQueriedIndex('Test');
+  });
 
   expect(builder.current?.state.queriedColumnRange).toEqual({
     prevIndex: 9,

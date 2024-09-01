@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint func-names: "off" */
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import dh from '@deephaven/jsapi-shim';
 import { MockChartModel } from '@deephaven/chart';
 import type { Container } from '@deephaven/golden-layout';
@@ -97,13 +97,16 @@ function makeChartPanelWrapper({
 }
 
 function callUpdateFunction(isLoading = false) {
-  MockChart.mock.calls[MockChart.mock.calls.length - 1][0]?.onUpdate({
-    isLoading,
-  });
+  act(
+    () =>
+      MockChart.mock.calls[MockChart.mock.calls.length - 1][0]?.onUpdate({
+        isLoading,
+      })
+  );
 }
 
 function callErrorFunction() {
-  MockChart.mock.calls[MockChart.mock.calls.length - 1][0].onError();
+  act(() => MockChart.mock.calls[MockChart.mock.calls.length - 1][0].onError());
 }
 
 function expectLoading(container) {
@@ -400,7 +403,7 @@ it('shows loading spinner until all series to process are loaded', async () => {
 
   const { container } = render(makeChartPanelWrapper({ makeModel }));
 
-  await act(() => expect(modelPromise).resolves.toBe(model));
+  await waitFor(() => expect(modelPromise).resolves.toBe(model));
 
   // Overlays shouldn't appear yet because we haven't received an update or error event, should just see loading
   expectLoading(container);

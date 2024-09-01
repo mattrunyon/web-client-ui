@@ -136,12 +136,9 @@ it('should memoize result', () => {
     wrapper,
   });
 
+  const a = result.current;
   rerender();
-
-  expect(result.all.length).toEqual(3);
-
-  const [a, b] = result.all.slice(-2);
-
+  const b = result.current;
   expect(a).toBe(b);
 });
 

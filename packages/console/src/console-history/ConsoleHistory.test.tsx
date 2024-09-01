@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import ConsoleHistory from './ConsoleHistory';
 
 function makeHistoryItem(
@@ -34,19 +34,17 @@ function makeHistoryItems(count) {
 }
 
 it('renders an empty list without crashing', () => {
-  const div = document.createElement('div');
+  const root = createRoot(document.createElement('div'));
   const items = makeHistoryItems(0);
-  ReactDOM.render(
-    <ConsoleHistory items={items} language="python" openObject={jest.fn()} />,
-    div
+  root.render(
+    <ConsoleHistory items={items} language="python" openObject={jest.fn()} />
   );
 });
 
 it('renders a list of 100 without crashing', () => {
-  const div = document.createElement('div');
+  const root = createRoot(document.createElement('div'));
   const items = makeHistoryItems(100);
-  ReactDOM.render(
-    <ConsoleHistory items={items} language="python" openObject={jest.fn()} />,
-    div
+  root.render(
+    <ConsoleHistory items={items} language="python" openObject={jest.fn()} />
   );
 });

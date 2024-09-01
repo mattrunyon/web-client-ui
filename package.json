@@ -41,7 +41,7 @@
     "test": "jest --watch --changedSince origin/main",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --config jest.config.unit.cjs --runInBand --watch",
     "pretest:unit": "npm run pretest",
-    "test:unit": "jest --config jest.config.unit.cjs",
+    "test:unit": "jest --config jest.config.unit.cjs --runInBand",
     "test:lint": "jest --config jest.config.lint.cjs",
     "test:golden-layout": "lerna run test:ci --scope=@deephaven/golden-layout --stream",
     "version-bump": "lerna version --conventional-commits --create-release github",

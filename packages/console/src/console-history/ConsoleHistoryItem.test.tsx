@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import ConsoleHistoryItem from './ConsoleHistoryItem';
 
 const DEFAULT_ITEM = {
@@ -9,13 +9,12 @@ const DEFAULT_ITEM = {
 };
 
 it('renders default item without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(
+  const root = createRoot(document.createElement('div'));
+  root.render(
     <ConsoleHistoryItem
       item={DEFAULT_ITEM}
       language="python"
       openObject={jest.fn()}
-    />,
-    div
+    />
   );
 });
