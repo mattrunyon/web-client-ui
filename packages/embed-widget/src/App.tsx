@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import {
@@ -50,6 +56,52 @@ const LAYOUT_SETTINGS = {
   hasHeaders: true,
   defaultComponentConfig: { isClosable: false },
 };
+
+/**
+ * Enable or disable headers based on the number of components in the layout.
+ * @param layoutConfig The GoldenLayout config
+ * @param goldenLayout The GoldenLayout instance
+ */
+function useShowHeaders(
+  layoutConfig: ItemConfig[],
+  goldenLayout: GoldenLayout | null
+): void {
+  const prevHasMultipleComponents = useRef(false);
+  const hasMultipleComponents = useMemo(() => {
+    function getComponentCount(config: ItemConfig[]) {
+      if (config.length === 0) {
+        return 0;
+      }
+
+      let count = 0;
+      for (let i = 0; i < config.length; i += 1) {
+        const item = config[i];
+        if (item.type === 'react-component' || item.type === 'component') {
+          count += 1;
+        } else if (item.content != null) {
+          count += getComponentCount(item.content);
+        }
+      }
+      return count;
+    }
+    return getComponentCount(layoutConfig) > 1;
+  }, [layoutConfig]);
+
+  // Do this instead of changing layoutSettings because it will create
+  // a new gl instance and can cause some loading failures likely due to
+  // some race conditions w/ deephaven UI.
+  // Run immediately instead of in an effect so we don't see just 1 panel for a second before other headers appear
+  if (hasMultipleComponents !== prevHasMultipleComponents.current) {
+    prevHasMultipleComponents.current = hasMultipleComponents;
+    if (goldenLayout != null) {
+      if (hasMultipleComponents) {
+        goldenLayout.enableHeaders();
+      } else {
+        goldenLayout.disableHeaders();
+      }
+    }
+  }
+}
 
 /**
  * A functional React component that displays a Deephaven Widget using the @deephaven/plugin package.
@@ -178,41 +230,7 @@ function App(): JSX.Element {
   const layoutConfig = (allDashboardData[dashboardId]?.layoutConfig ??
     EMPTY_ARRAY) as ItemConfig[];
 
-  const hasMultipleComponents = useMemo(() => {
-    function getComponentCount(config: ItemConfig[]) {
-      if (config.length === 0) {
-        return 0;
-      }
-
-      let count = 0;
-      for (let i = 0; i < config.length; i += 1) {
-        const item = config[i];
-        if (item.type === 'react-component' || item.type === 'component') {
-          count += 1;
-        } else if (item.content != null) {
-          count += getComponentCount(item.content);
-        }
-      }
-      return count;
-    }
-    return getComponentCount(layoutConfig) > 1;
-  }, [layoutConfig]);
-
-  // Do this instead of changing layoutSettings because it will create
-  // a new gl instance and can cause some loading failures likely due to
-  // some race conditions w/ deephaven UI
-  useEffect(
-    function togglePanelHeaders() {
-      if (goldenLayout != null) {
-        if (hasMultipleComponents) {
-          goldenLayout.enableHeaders();
-        } else {
-          goldenLayout.disableHeaders();
-        }
-      }
-    },
-    [hasMultipleComponents, goldenLayout]
-  );
+  useShowHeaders(layoutConfig, goldenLayout);
 
   return (
     <div className="App">
