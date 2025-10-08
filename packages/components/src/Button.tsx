@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSlotProps } from '@react-spectrum/utils';
+import { Pressable } from 'react-aria-components';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { type IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -156,38 +157,41 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ariaLabelString = tooltip;
     }
 
+    // Wrapping in Pressable allows our button to work as a Spectrum trigger
     const button = (
-      <button
-        data-testid={dataTestId}
-        ref={ref}
-        // eslint-disable-next-line react/button-has-type
-        type={type}
-        className={classNames(
-          'btn',
-          btnClassName,
-          variantClassName,
-          { active },
-          className,
-          UNSAFE_className
-        )}
-        onClick={onClick}
-        onContextMenu={onContextMenu}
-        onMouseUp={onMouseUp}
-        onMouseDown={onMouseDown}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onKeyDown={onKeyDown}
-        style={style}
-        disabled={disabled}
-        tabIndex={tabIndex}
-        aria-label={ariaLabelString}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...rest}
-      >
-        {icon && iconElem}
-        {children}
-        {tooltip != null && !disabled && tooltipElem}
-      </button>
+      <Pressable>
+        <button
+          data-testid={dataTestId}
+          ref={ref}
+          // eslint-disable-next-line react/button-has-type
+          type={type}
+          className={classNames(
+            'btn',
+            btnClassName,
+            variantClassName,
+            { active },
+            className,
+            UNSAFE_className
+          )}
+          onClick={onClick}
+          onContextMenu={onContextMenu}
+          onMouseUp={onMouseUp}
+          onMouseDown={onMouseDown}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onKeyDown={onKeyDown}
+          style={style}
+          disabled={disabled}
+          tabIndex={tabIndex}
+          aria-label={ariaLabelString}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...rest}
+        >
+          {icon && iconElem}
+          {children}
+          {tooltip != null && !disabled && tooltipElem}
+        </button>
+      </Pressable>
     );
 
     // disabled buttons tooltips need a wrapped element to receive pointer events
